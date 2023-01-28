@@ -23,14 +23,16 @@ class FmtConan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "with_fmt_alias": [True, False],
-        "with_os_api": [True, False],
+        "with_static_thousands_separator", [True, False],
+        "with_os_api": [True, False]
     }
     default_options = {
         "header_only": False,
         "shared": False,
         "fPIC": True,
         "with_fmt_alias": False,
-        "with_os_api": True,
+        "with_static_thousands_separator", False,
+        "with_os_api": True
     }
 
     @property
@@ -87,6 +89,7 @@ class FmtConan(ConanFile):
             self.info.clear()
         else:
             del self.info.options.with_fmt_alias
+            del self.info.options.with_static_thousands_separator
 
     def validate(self):
         if self.info.settings.get_safe("compiler.cppstd"):
@@ -124,6 +127,9 @@ class FmtConan(ConanFile):
         # TODO: back to global scope in conan v2 once cmake_find_package* generators removed
         if self.options.with_fmt_alias:
             self.cpp_info.components["_fmt"].defines.append("FMT_STRING_ALIAS=1")
+            
+        if self.options.with_static_thousands_separator:
+            self.cpp_info.components["_fmt"].defines.append("FMT_STATIC_THOUSANDS_SEPARATOR=1")
 
         if self.options.header_only:
             self.cpp_info.components["_fmt"].defines.append("FMT_HEADER_ONLY=1")
